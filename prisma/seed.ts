@@ -1,20 +1,34 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../lib/generated/prisma';
+
 const db = new PrismaClient();
 
 async function main() {
-  await db.category.create({
-    data: {
-      name: 'Rings',
-      products: {
-        create: {
-          name: 'Silver Ring',
-          slug: 'silver-ring',
-          description: '925 sterling silver ring',
-          priceCents: 3999,
-        },
-      },
+  const category = await db.category.upsert({
+    where: {
+      slug: "rings"
     },
+    update: {},
+    create: {
+      name: "Rings",
+      slug: "rings"
+    }
   });
+
+  const existingProduct = await db.product.findUnique({
+    where: { slug: "silver-ring" }
+  });
+
+  if (!existingProduct) {
+    await db.product.create({
+      data: {
+        name: "Silver Ring",
+        slug: "silver-ring",
+        description: "925 Sterling Silver Ring",
+        priceCents: 3999,
+        categoryId: category.id
+      }
+    });
+  }
 }
 
 main()
