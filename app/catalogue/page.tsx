@@ -1,9 +1,12 @@
 import { ProductGrid } from "@/components/catalogue/product-grid"
+export const dynamic = 'force-dynamic';
 
 export default async function CataloguePage() {
-  const base = process.env.SITE_URL ?? 'http://localhost:3000'
-  const res  = await fetch(`${base}/api/products`, { next: { revalidate: 60 } })
-  const products = await res.json()
+  const base =
+  process.env.NEXT_PUBLIC_SITE_URL // продакшн / preview
+  ?? `http://localhost:${process.env.PORT ?? 3000}`; // dev fallback
+const res = await fetch(`${base}/api/products`, { next: { revalidate: 60 }});
+const products = await res.json()
   
   
 
@@ -20,3 +23,4 @@ export default async function CataloguePage() {
     </div>
   );
 }
+
