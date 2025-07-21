@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  framer-motion: 12.16.0
+
 importers:
 
   .:
