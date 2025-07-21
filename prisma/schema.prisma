@@ -6,8 +6,7 @@
 
 generator client {
   provider       = "prisma-client-js"
-  output         = "../lib/generated/prisma"
-  binaryTargets  = ["native", "rhel-openssl-3.0.x"]   // ← обидва!
+  binaryTargets  = ["native", "rhel-openssl-3.0.x"]   
 }
 
 datasource db {
@@ -35,5 +34,6 @@ model Product {
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  featured  Boolean  @default(false)
 }
 

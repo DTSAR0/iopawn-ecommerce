@@ -1,25 +1,33 @@
-import { notFound } from "next/navigation"
-import { products } from "@/data/products"
-import { ProductDetail } from "@/components/product/product-detail"
+import { db } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { ProductDetail } from "@/components/product/product-detail";
 
 interface ProductPageProps {
   params: {
-    id: string
-  }
+    id: string;
+  };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const product = products.find((p) => p.id === params.id)
+export default async function ProductPage({ params }: ProductPageProps) {
+  const product = await db.product.findUnique({
+    where: { id: params.id },
+    include: { category: true },
+  });
 
-  if (!product) {
-    notFound()
-  }
+  if (!product) return notFound();
 
-  return <ProductDetail product={product} />
-}
+  // Adapt Prisma product to ProductDetail's expected shape
+  const productForDetail = {
+    ...product,
+    images: [], // TODO: Replace with actual images if available
+    material: "—", // Placeholder, update if you add this field
+    weight: "—",   // Placeholder
+    size: "—",     // Placeholder
+    price: product.priceCents / 100, // ProductDetail expects price in dollars
+    featured: false, // Placeholder, update if you add this field
+    description: product.description ?? "", // Ensure string
+    category: product.category?.name ?? "—", // Convert to string
+  };
 
-export function generateStaticParams() {
-  return products.map((product) => ({
-    id: product.id,
-  }))
+  return <ProductDetail product={productForDetail} />;
 }

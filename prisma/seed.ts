@@ -1,4 +1,4 @@
-import { PrismaClient } from '../lib/generated/prisma';
+import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
@@ -15,17 +15,18 @@ async function main() {
   });
 
   const existingProduct = await db.product.findUnique({
-    where: { slug: "silver-ring-1" }
+    where: { slug: "silver-ring-3" }
   });
 
   if (!existingProduct) {
     await db.product.create({
       data: {
-        name: "Silver Ring 1",
-        slug: "silver-ring-1",
-        description: "925 Sterling Silver Ring 1",
-        priceCents: 3000,
-        categoryId: category.id
+        name: "Silver Ring 3",
+        slug: "silver-ring-3",
+        description: "925 Sterling Silver Ring 3",
+        priceCents: 4500,
+        categoryId: category.id,  
+        featured: true
       }
     });
   }

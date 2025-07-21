@@ -32,8 +32,8 @@ export function ProductDetail({ product }: ProductDetailProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="container mx-auto px-4 py-6 md:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
         {/* Image Gallery */}
         <div className="space-y-4">
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-silver-50">
@@ -48,7 +48,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white h-8 w-8 md:h-10 md:w-10"
                   onClick={prevImage}
                   aria-label="Previous image"
                 >
@@ -57,7 +57,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white h-8 w-8 md:h-10 md:w-10"
                   onClick={nextImage}
                   aria-label="Next image"
                 >
@@ -69,12 +69,12 @@ export function ProductDetail({ product }: ProductDetailProps) {
 
           {/* Thumbnail Navigation */}
           {product.images.length > 1 && (
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 overflow-x-auto pb-2 -mx-2 px-2">
               {product.images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                  className={`relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all ${
                     index === currentImageIndex ? "border-primary" : "border-silver-200 hover:border-silver-400"
                   }`}
                 >
@@ -98,14 +98,14 @@ export function ProductDetail({ product }: ProductDetailProps) {
           className="space-y-8"
         >
           <div>
-            <h1 className="text-3xl font-light text-silver-900 mb-4">{product.name}</h1>
-            <p className="text-silver-600 text-lg leading-relaxed mb-6">{product.description}</p>
-            <p className="text-3xl font-light text-silver-900">{formatPrice(product.price)}</p>
+            <h1 className="text-2xl md:text-3xl font-light text-silver-900 mb-4">{product.name}</h1>
+            <p className="text-silver-600 text-base md:text-lg leading-relaxed mb-6">{product.description}</p>
+            <p className="text-2xl md:text-3xl font-light text-silver-900">{formatPrice(product.price)}</p>
           </div>
 
           {/* Specifications */}
           <div className="border-t border-silver-200 pt-8">
-            <h3 className="text-lg font-medium text-silver-900 mb-4">Specifications</h3>
+            <h3 className="text-base md:text-lg font-medium text-silver-900 mb-4">Specifications</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-silver-600">Material</span>
@@ -134,17 +134,17 @@ export function ProductDetail({ product }: ProductDetailProps) {
                   size="icon"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1}
-                  className="h-10 w-10"
+                  className="h-8 w-8 md:h-10 md:w-10"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="px-4 py-2 text-center min-w-[3rem]">{quantity}</span>
+                <span className="px-2 md:px-4 py-2 text-center min-w-[2.5rem] md:min-w-[3rem]">{quantity}</span>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setQuantity(quantity + 1)}
-                  className="h-10 w-10"
+                  className="h-8 w-8 md:h-10 md:w-10"
                   aria-label="Increase quantity"
                 >
                   <Plus className="h-4 w-4" />
@@ -152,15 +152,15 @@ export function ProductDetail({ product }: ProductDetailProps) {
               </div>
             </div>
 
-            <Button onClick={handleAddToCart} size="lg" className="w-full text-lg py-4">
+            <Button onClick={handleAddToCart} size="lg" className="w-full text-base md:text-lg py-3 md:py-4">
               Add to Cart
             </Button>
           </div>
 
           {/* Care Instructions */}
           <div className="border-t border-silver-200 pt-8">
-            <h3 className="text-lg font-medium text-silver-900 mb-4">Care Instructions</h3>
-            <ul className="text-silver-600 space-y-2 text-sm">
+            <h3 className="text-base md:text-lg font-medium text-silver-900 mb-4">Care Instructions</h3>
+            <ul className="text-silver-600 space-y-2 text-xs md:text-sm">
               <li>• Store in a dry place away from direct sunlight</li>
               <li>• Clean gently with a soft cloth</li>
               <li>• Avoid contact with perfumes and chemicals</li>
