@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ["framer-motion"],
   experimental: {
-    serverExternalPackages: ["framer-motion"],
+    
   },
   eslint: {
     ignoreDuringBuilds: true,
