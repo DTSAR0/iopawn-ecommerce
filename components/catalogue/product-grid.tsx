@@ -1,3 +1,5 @@
+"use client"
+
 import type { Product } from "@prisma/client"
 import { ProductCard } from "./product-card"
 import { motion } from "framer-motion"
