@@ -1,4 +1,7 @@
 // !!  НЕ пиши 'use client'  — тоді компонент виконається на сервері
+"use client";               // ← бо є motion всередині
+
+import { motion } from "framer-motion";
 import { db } from "@/lib/prisma";
 import { ProductCard } from "@/components/catalogue/product-card";
 
