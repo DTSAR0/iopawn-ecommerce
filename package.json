@@ -46,7 +46,7 @@
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
-    "framer-motion": "12.23.6",
+    "framer-motion": "latest",
     "immer": "latest",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
@@ -59,6 +59,7 @@
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
     "sonner": "^1.7.1",
+    "swr": "^2.3.4",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "use-sync-external-store": "latest",
@@ -78,9 +79,5 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
-  },
-  "resolutions": {
-      "framer-motion": "12.16.0"
-    }
   }
-
+}
