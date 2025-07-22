@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { formatPrice } from "@/lib/utils";
 
-type ProductFromApi = {
+export type ProductFromApi = {
   id: string;
   name: string;
   slug: string;
