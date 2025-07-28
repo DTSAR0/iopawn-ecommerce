@@ -7,14 +7,16 @@ import { formatPrice } from "@/lib/utils"
 import { Minus, Plus, X } from "lucide-react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeItem, getTotalPrice } = useCartStore()
   const totalPrice = getTotalPrice()
+  const router = useRouter()
 
   const handleCheckout = () => {
     // Mock checkout process
-    alert("Thank you for your order! This is a demo checkout.")
+    router.push("/checkout")
     closeCart()
   }
 

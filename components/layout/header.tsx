@@ -4,13 +4,19 @@ import Link from "next/link"
 import { ShoppingBag, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCartStore } from "@/lib/store"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export function Header() {
   const { getTotalItems, openCart } = useCartStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const totalItems = getTotalItems()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  const totalItems = mounted ? getTotalItems() : 0
 
   const navigation = [
     { name: "Home", href: "/" },
