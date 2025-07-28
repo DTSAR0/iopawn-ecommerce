@@ -81,6 +81,33 @@ export function SmartAddressForm() {
 
   const currentCountry = getCurrentCountryData()
 
+  // Static placeholder function that doesn't change on re-renders
+  const getPlaceholderForCountry = (countryCode: string, fieldType: 'fullName' | 'phone' | 'city' | 'zipCode'): string => {
+    const country = countryData[countryCode]
+    if (!country) {
+      switch (fieldType) {
+        case 'fullName': return "John Doe"
+        case 'phone': return "+1 (555) 123-4567"
+        case 'city': return "New York"
+        case 'zipCode': return "10001"
+        default: return ""
+      }
+    }
+
+    switch (fieldType) {
+      case 'fullName':
+        return `${country.names.firstNames[0]} ${country.names.lastNames[0]}`
+      case 'phone':
+        return formatPhoneNumber(country.phoneCode, country.phoneFormat)
+      case 'city':
+        return country.cities[0]
+      case 'zipCode':
+        return generateZipCode(country.addressFormat.zipFormat)
+      default:
+        return ""
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -141,7 +168,7 @@ export function SmartAddressForm() {
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder={currentCountry ? `${getRandomName(selectedCountry, 'first')} ${getRandomName(selectedCountry, 'last')}` : "John Doe"} 
+                  placeholder={getPlaceholderForCountry(selectedCountry, 'fullName')} 
                   {...field} 
                 />
               </FormControl>
@@ -159,7 +186,7 @@ export function SmartAddressForm() {
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder={currentCountry ? formatPhoneNumber(currentCountry.phoneCode, currentCountry.phoneFormat) : "+1 (555) 123-4567"} 
+                  placeholder={getPlaceholderForCountry(selectedCountry, 'phone')} 
                   {...field} 
                 />
               </FormControl>
@@ -193,7 +220,7 @@ export function SmartAddressForm() {
                 <FormLabel>City</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder={currentCountry ? getRandomCity(selectedCountry) : "New York"} 
+                    placeholder={getPlaceholderForCountry(selectedCountry, 'city')} 
                     {...field} 
                   />
                 </FormControl>
@@ -239,7 +266,7 @@ export function SmartAddressForm() {
               <FormLabel>{currentCountry?.addressFormat.zipLabel || 'ZIP Code'}</FormLabel>
               <FormControl>
                 <Input 
-                  placeholder={currentCountry ? generateZipCode(currentCountry.addressFormat.zipFormat) : "10001"} 
+                  placeholder={getPlaceholderForCountry(selectedCountry, 'zipCode')} 
                   {...field} 
                 />
               </FormControl>
