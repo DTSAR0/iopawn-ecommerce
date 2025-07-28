@@ -98,7 +98,17 @@ export function SmartAddressForm() {
       case 'fullName':
         return `${country.names.firstNames[0]} ${country.names.lastNames[0]}`
       case 'phone':
-        return formatPhoneNumber(country.phoneCode, country.phoneFormat)
+        // Use static examples instead of random generation
+        switch (countryCode) {
+          case 'US': return "+1 (555) 123-4567"
+          case 'CA': return "+1 (555) 123-4567"
+          case 'GB': return "+44 0123 456789"
+          case 'DE': return "+49 123 4567890"
+          case 'FR': return "+33 1 23 45 67 89"
+          case 'AU': return "+61 1 2345 6789"
+          case 'JP': return "+81 12-3456-7890"
+          default: return "+1 (555) 123-4567"
+        }
       case 'city':
         return country.cities[0]
       case 'zipCode':
