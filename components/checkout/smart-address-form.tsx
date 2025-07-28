@@ -5,28 +5,16 @@ import { useFormContext } from "react-hook-form"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion } from "framer-motion"
-import { Wand2, RefreshCw } from "lucide-react"
-import { 
-  countryData, 
-  getRandomName, 
-  getRandomCity, 
-  getRandomState, 
-  formatPhoneNumber, 
-  generateZipCode 
-} from "@/lib/country-data"
+import { countryData } from "@/lib/country-data"
 
 export function SmartAddressForm() {
   const form = useFormContext()
   const [selectedCountry, setSelectedCountry] = useState<string>('')
-  const [isGenerating, setIsGenerating] = useState(false)
 
   // Watch form values
   const country = form.watch("country")
-  const fullName = form.watch("fullName")
-  const phone = form.watch("phone")
 
   useEffect(() => {
     if (country && country !== selectedCountry) {
@@ -36,43 +24,13 @@ export function SmartAddressForm() {
   }, [country, selectedCountry])
 
   const updateFormForCountry = (countryCode: string) => {
-    const country = countryData[countryCode]
-    if (!country) return
-
-    // Update form labels and validation based on country
-    form.setValue("country", countryCode)
-    
-    // Update field labels in the form context
-    const addressFormat = country.addressFormat
-    
-    // Generate appropriate data for the country
-    const firstName = getRandomName(countryCode, 'first')
-    const lastName = getRandomName(countryCode, 'last')
-    const city = getRandomCity(countryCode)
-    const state = getRandomState(countryCode)
-    const phoneNumber = formatPhoneNumber(country.phoneCode, country.phoneFormat)
-    const zipCode = generateZipCode(addressFormat.zipFormat)
-
-    // Update form values
-    form.setValue("fullName", `${firstName} ${lastName}`)
-    form.setValue("phone", phoneNumber)
-    form.setValue("city", city)
-    if (addressFormat.hasState && state) {
-      form.setValue("state", state)
-    }
-    form.setValue("zipCode", zipCode)
-  }
-
-  const generateRandomData = async () => {
-    if (!selectedCountry) return
-    
-    setIsGenerating(true)
-    
-    // Simulate a small delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    updateFormForCountry(selectedCountry)
-    setIsGenerating(false)
+    // Clear existing values when country changes
+    form.setValue('fullName', '')
+    form.setValue('phone', '')
+    form.setValue('streetAddress', '')
+    form.setValue('city', '')
+    form.setValue('state', '')
+    form.setValue('zipCode', '')
   }
 
   const getCurrentCountryData = () => {
@@ -81,76 +39,10 @@ export function SmartAddressForm() {
 
   const currentCountry = getCurrentCountryData()
 
-  // Static placeholder function that doesn't change on re-renders
-  const getPlaceholderForCountry = (countryCode: string, fieldType: 'fullName' | 'phone' | 'city' | 'zipCode'): string => {
-    const country = countryData[countryCode]
-    if (!country) {
-      switch (fieldType) {
-        case 'fullName': return "John Doe"
-        case 'phone': return "+1 (555) 123-4567"
-        case 'city': return "New York"
-        case 'zipCode': return "10001"
-        default: return ""
-      }
-    }
-
-    switch (fieldType) {
-      case 'fullName':
-        return `${country.names.firstNames[0]} ${country.names.lastNames[0]}`
-      case 'phone':
-        // Use static examples instead of random generation
-        switch (countryCode) {
-          case 'US': return "+1 (555) 123-4567"
-          case 'CA': return "+1 (555) 123-4567"
-          case 'GB': return "+44 0123 456789"
-          case 'DE': return "+49 123 4567890"
-          case 'FR': return "+33 1 23 45 67 89"
-          case 'AU': return "+61 1 2345 6789"
-          case 'JP': return "+81 12-3456-7890"
-          default: return "+1 (555) 123-4567"
-        }
-      case 'city':
-        return country.cities[0]
-      case 'zipCode':
-        // Use static examples instead of random generation
-        switch (countryCode) {
-          case 'US': return "12345"
-          case 'CA': return "A1A 1A1"
-          case 'GB': return "A1A 1AA"
-          case 'DE': return "12345"
-          case 'FR': return "12345"
-          case 'AU': return "1234"
-          case 'JP': return "123-4567"
-          default: return "12345"
-        }
-      default:
-        return ""
-    }
-  }
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Smart Address Form</span>
-          {selectedCountry && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={generateRandomData}
-              disabled={isGenerating}
-              className="flex items-center gap-2"
-            >
-              {isGenerating ? (
-                <RefreshCw className="h-4 w-4 animate-spin" />
-              ) : (
-                <Wand2 className="h-4 w-4" />
-              )}
-              Generate Data
-            </Button>
-          )}
-        </CardTitle>
+        <CardTitle>Address Information</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Country Selection */}
@@ -187,10 +79,7 @@ export function SmartAddressForm() {
             <FormItem>
               <FormLabel>Full Name</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={getPlaceholderForCountry(selectedCountry, 'fullName')} 
-                  {...field} 
-                />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -205,10 +94,7 @@ export function SmartAddressForm() {
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={getPlaceholderForCountry(selectedCountry, 'phone')} 
-                  {...field} 
-                />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -223,7 +109,7 @@ export function SmartAddressForm() {
             <FormItem>
               <FormLabel>Street Address</FormLabel>
               <FormControl>
-                <Input placeholder="123 Main St" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -239,10 +125,7 @@ export function SmartAddressForm() {
               <FormItem>
                 <FormLabel>City</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder={getPlaceholderForCountry(selectedCountry, 'city')} 
-                    {...field} 
-                  />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -285,29 +168,12 @@ export function SmartAddressForm() {
             <FormItem>
               <FormLabel>{currentCountry?.addressFormat.zipLabel || 'ZIP Code'}</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder={getPlaceholderForCountry(selectedCountry, 'zipCode')} 
-                  {...field} 
-                />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {/* Country-specific info */}
-        {currentCountry && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-3 bg-blue-50 rounded-lg border border-blue-200"
-          >
-            <p className="text-sm text-blue-800">
-              <strong>Format for {currentCountry.name}:</strong> Phone numbers use {currentCountry.phoneFormat} format, 
-              and postal codes follow {currentCountry.addressFormat.zipFormat} pattern.
-            </p>
-          </motion.div>
-        )}
       </CardContent>
     </Card>
   )

@@ -1,30 +1,6 @@
 {
   "version": 4,
   "routes": {
-    "/checkout": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/checkout",
-      "dataRoute": "/checkout.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/about": {
       "experimentalBypassFor": [
         {
@@ -72,13 +48,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/checkout": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/checkout",
+      "dataRoute": "/checkout.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "9aac77d7b979b4e9e94330f3536cb2ab",
-    "previewModeSigningKey": "53b10c06acc9071ff7a5e7a82912e6814e5eb84acd0d1f0ed26f3910b9b51065",
-    "previewModeEncryptionKey": "c11192a4e2b263245db3a307a18a0f4bd9bdf2732181a670bf498fcaa5b4cb15"
+    "previewModeId": "ba4879c442bb593b6906b906c39cceab",
+    "previewModeSigningKey": "a4a3967645fbb23137b1c4dd0477319f0884ed2829ef81b939ebb9aa92ae9ec1",
+    "previewModeEncryptionKey": "d2d9cae8ee1a2951f961863677c7d74b5cea7fe181bb0ea335698bc48737155b"
   }
 }
