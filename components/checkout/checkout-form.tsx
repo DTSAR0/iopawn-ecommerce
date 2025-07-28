@@ -8,74 +8,38 @@ import * as z from "zod"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { useCartStore } from "@/lib/store"
-import { ShippingAddressForm } from "./shipping-address-form"
-import { ContactInformationForm } from "./contact-information-form"
-import { BillingAddressForm } from "./billing-address-form"
+import { SmartAddressForm } from "./smart-address-form"
 import { PaymentMethodForm } from "./payment-method-form"
-import { PromoCodeForm } from "./promo-code-form"
 
 const checkoutSchema = z
   .object({
-    // Shipping Address
+    // Address Information
     country: z.string().min(1, "Country is required"),
     fullName: z.string().min(1, "Full name is required"),
-    streetAddress1: z.string().min(1, "Street address is required"),
-    streetAddress2: z.string().optional(),
+    streetAddress: z.string().min(1, "Street address is required"),
     city: z.string().min(1, "City is required"),
-    stateProvince: z.string().min(1, "State/Province is required"),
-    zipPostal: z.string().min(1, "ZIP/Postal code is required"),
-    deliveryInstructions: z.string().optional(),
-
+    state: z.string().optional(),
+    zipCode: z.string().min(1, "ZIP/Postal code is required"),
+    
     // Contact Information
     email: z.string().email("Invalid email address"),
-    subscribeUpdates: z.boolean().default(false),
     phone: z.string().min(1, "Phone number is required"),
 
-    // Billing
-    billingAddressSame: z.boolean().default(true),
-    billingCountry: z.string().optional(),
-    billingFullName: z.string().optional(),
-    billingStreetAddress1: z.string().optional(),
-    billingStreetAddress2: z.string().optional(),
-    billingCity: z.string().optional(),
-    billingStateProvince: z.string().optional(),
-    billingZipPostal: z.string().optional(),
-
     // Payment
-    paymentMethod: z.enum(["card", "paypal", "apple-pay", "google-pay"]),
+    paymentMethod: z.enum(["card", "paypal"]),
     cardNumber: z.string().optional(),
     cardExpiry: z.string().optional(),
     cardCvc: z.string().optional(),
-
-    // Promo Code
-    promoCode: z.string().optional(),
+    cardName: z.string().optional(),
   })
   .refine(
     (data) => {
-      if (!data.billingAddressSame) {
-        return (
-          data.billingCountry &&
-          data.billingFullName &&
-          data.billingStreetAddress1 &&
-          data.billingCity &&
-          data.billingStateProvince &&
-          data.billingZipPostal
-        )
-      }
-      return true
-    },
-    {
-      message: "Billing address is required when different from shipping",
-      path: ["billingFullName"],
-    },
-  )
-  .refine(
-    (data) => {
       if (data.paymentMethod === "card") {
-        return data.cardNumber && data.cardExpiry && data.cardCvc
+        return data.cardNumber && data.cardExpiry && data.cardCvc && data.cardName
       }
       return true
     },
@@ -97,8 +61,6 @@ export function CheckoutForm() {
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      billingAddressSame: true,
-      subscribeUpdates: false,
       paymentMethod: "card",
     },
   })
@@ -137,62 +99,43 @@ export function CheckoutForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Shipping Address */}
+        {/* Smart Address Form */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Shipping Address</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ShippingAddressForm form={form} />
-            </CardContent>
-          </Card>
+          <SmartAddressForm />
         </motion.div>
 
-        {/* Contact Information */}
+        {/* Email Field */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card>
             <CardHeader>
               <CardTitle>Contact Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <ContactInformationForm form={form} />
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Billing Address */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Billing Address</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <BillingAddressForm form={form} />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="your@email.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
         </motion.div>
 
         {/* Payment Method */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <Card>
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
             </CardHeader>
             <CardContent>
               <PaymentMethodForm form={form} />
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Promo Code */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Promo Code</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PromoCodeForm form={form} onDiscountApplied={setPromoDiscount} />
             </CardContent>
           </Card>
         </motion.div>
