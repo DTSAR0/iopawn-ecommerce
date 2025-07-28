@@ -112,7 +112,17 @@ export function SmartAddressForm() {
       case 'city':
         return country.cities[0]
       case 'zipCode':
-        return generateZipCode(country.addressFormat.zipFormat)
+        // Use static examples instead of random generation
+        switch (countryCode) {
+          case 'US': return "12345"
+          case 'CA': return "A1A 1A1"
+          case 'GB': return "A1A 1AA"
+          case 'DE': return "12345"
+          case 'FR': return "12345"
+          case 'AU': return "1234"
+          case 'JP': return "123-4567"
+          default: return "12345"
+        }
       default:
         return ""
     }
