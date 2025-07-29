@@ -94,7 +94,24 @@ export function SmartAddressForm() {
             <FormItem>
               <FormLabel>Phone Number</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input 
+                  {...field}
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9+\-\(\)\s]*"
+                  onKeyPress={(e) => {
+                    // Allow only numbers, +, -, (, ), and space
+                    const allowedChars = /[0-9+\-\(\)\s]/
+                    if (!allowedChars.test(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
+                  onChange={(e) => {
+                    // Remove any non-allowed characters
+                    const value = e.target.value.replace(/[^0-9+\-\(\)\s]/g, '')
+                    field.onChange(value)
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
