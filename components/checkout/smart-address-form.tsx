@@ -25,7 +25,8 @@ export function SmartAddressForm() {
 
   const updateFormForCountry = (countryCode: string) => {
     // Clear existing values when country changes
-    form.setValue('fullName', '')
+    form.setValue('firstName', '')
+    form.setValue('lastName', '')
     form.setValue('phone', '')
     form.setValue('streetAddress', '')
     form.setValue('city', '')
@@ -71,20 +72,36 @@ export function SmartAddressForm() {
           )}
         />
 
-        {/* Full Name */}
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* First Name and Last Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {/* Phone Number */}
         <FormField
