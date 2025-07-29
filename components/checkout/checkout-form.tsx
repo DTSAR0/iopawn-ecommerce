@@ -27,7 +27,11 @@ const checkoutSchema = z
     
     // Contact Information
     email: z.string().email("Invalid email address"),
-    phone: z.string().min(1, "Phone number is required"),
+    phone: z.string()
+      .min(1, "Phone number is required")
+      .regex(/^[0-9+\-\(\)\s]+$/, "Phone number can only contain numbers, +, -, (, ), and spaces")
+      .min(7, "Phone number must be at least 7 digits")
+      .max(20, "Phone number cannot exceed 20 characters"),
 
     // Payment
     paymentMethod: z.enum(["card", "paypal"]),
@@ -118,7 +122,7 @@ export function CheckoutForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your@email.com" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
