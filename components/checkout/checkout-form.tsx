@@ -19,7 +19,8 @@ const checkoutSchema = z
   .object({
     // Address Information
     country: z.string().min(1, "Country is required"),
-    fullName: z.string().min(1, "Full name is required"),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
     streetAddress: z.string().min(1, "Street address is required"),
     city: z.string().min(1, "City is required"),
     state: z.string().optional(),
