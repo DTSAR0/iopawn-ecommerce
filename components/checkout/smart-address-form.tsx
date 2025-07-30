@@ -24,14 +24,22 @@ export function SmartAddressForm() {
   }, [country, selectedCountry])
 
   const updateFormForCountry = (countryCode: string) => {
+    const country = countryData[countryCode]
+    
     // Clear existing values when country changes
     form.setValue('firstName', '')
     form.setValue('lastName', '')
-    form.setValue('phone', '')
     form.setValue('streetAddress', '')
     form.setValue('city', '')
     form.setValue('state', '')
     form.setValue('zipCode', '')
+    
+    // Set phone number with country code
+    if (country) {
+      form.setValue('phone', country.phoneCode)
+    } else {
+      form.setValue('phone', '')
+    }
   }
 
   const getCurrentCountryData = () => {
@@ -127,6 +135,14 @@ export function SmartAddressForm() {
                     // Remove any non-allowed characters
                     const value = e.target.value.replace(/[^0-9+\-\(\)\s]/g, '')
                     field.onChange(value)
+                  }}
+                  onFocus={(e) => {
+                    // If the field is empty or only contains country code, position cursor after country code
+                    const currentCountry = getCurrentCountryData()
+                    if (currentCountry && field.value === currentCountry.phoneCode) {
+                      const countryCodeLength = currentCountry.phoneCode.length
+                      e.target.setSelectionRange(countryCodeLength, countryCodeLength)
+                    }
                   }}
                 />
               </FormControl>

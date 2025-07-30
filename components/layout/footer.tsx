@@ -85,7 +85,7 @@ export function Footer() {
               </Button>
             </div>
             <div className="flex space-x-3">
-              <Link href="#" className="text-silver-600 hover:text-primary transition-colors">
+              <Link href="https://www.instagram.com/iopawn/" target="_blank" rel="noopener noreferrer" className="text-silver-600 hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
