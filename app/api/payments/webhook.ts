@@ -1,22 +1,32 @@
 import { NextApiRequest, NextApiResponse } from "next"
-import Stripe from "stripe"
 import { db } from "@/lib/prisma"
 
 export const config = { api: { bodyParser: false } }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { 
-  apiVersion: "2025-07-30.basil" 
-})
+let stripe: any = null;
+
+// Initialize Stripe only if environment variable is available
+if (process.env.STRIPE_SECRET_KEY) {
+  const Stripe = require("stripe");
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { 
+    apiVersion: "2025-07-30.basil" 
+  });
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" })
   }
 
+  // Check if Stripe is initialized
+  if (!stripe) {
+    return res.status(500).json({ error: "Stripe is not configured" })
+  }
+
   const sig = req.headers["stripe-signature"] as string | undefined
   const buf = await (await import("raw-body")).default(req)
 
-  let event: Stripe.Event
+  let event: any
   try {
     event = stripe.webhooks.constructEvent(buf, sig!, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err) {
@@ -28,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Handle the event
     switch (event.type) {
       case "checkout.session.completed":
-        const session = event.data.object as Stripe.Checkout.Session
+        const session = event.data.object
         const sessionOrderId = session.metadata?.orderId
         
         if (sessionOrderId) {
@@ -41,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break
         
       case "payment_intent.succeeded":
-        const paymentIntent = event.data.object as Stripe.PaymentIntent
+        const paymentIntent = event.data.object
         const orderId = paymentIntent.metadata.orderId
         
         if (orderId) {
@@ -54,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break
         
       case "payment_intent.payment_failed":
-        const failedPayment = event.data.object as Stripe.PaymentIntent
+        const failedPayment = event.data.object
         const failedOrderId = failedPayment.metadata.orderId
         
         if (failedOrderId) {
