@@ -94,6 +94,27 @@ export function PaymentMethodForm({ form }: PaymentMethodFormProps) {
           >
             <FormField
               control={form.control}
+              name="cardName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name on Card</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        // Only allow letters, spaces, and hyphens
+                        const value = e.target.value.replace(/[^a-zA-Z\s\-]/g, '')
+                        field.onChange(value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="cardNumber"
               render={({ field }) => (
                 <FormItem>

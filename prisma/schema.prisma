@@ -30,10 +30,43 @@ model Product {
   slug        String   @unique
   description String?
   priceCents  Int
+  stockQuantity Int    @default(0)
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   featured  Boolean  @default(false)
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  status    String   @default("PENDING") // PENDING, PAID, CANCELLED
+  totalCents Int
+  
+  // Customer Information
+  email     String
+  phone     String
+  
+  // Delivery Information
+  firstName String
+  lastName  String
+  country   String
+  streetAddress String
+  city      String
+  state     String?
+  zipCode   String
+  
+  // Payment Information
+  paymentMethod String
+  cardName      String?
+  cardNumber    String?
+  cardExpiry    String?
+  cardCvc       String?
+  
+  // Order Items (as JSON for simplicity)
+  orderItems    Json // Array of {productId, productSlug, quantity, priceCents}
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
