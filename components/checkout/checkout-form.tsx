@@ -189,7 +189,8 @@ export function CheckoutForm() {
       })
 
       if (!sessionResponse.ok) {
-        throw new Error('Failed to create checkout session')
+        const errorData = await sessionResponse.json();
+        throw new Error(`Failed to create checkout session: ${errorData.error || 'Unknown error'}`)
       }
 
       const sessionData = await sessionResponse.json()
