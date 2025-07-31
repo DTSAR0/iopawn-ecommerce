@@ -50,7 +50,22 @@ export function ContactInformationForm({ form }: ContactInformationFormProps) {
           <FormItem>
             <FormLabel>Phone Number</FormLabel>
             <FormControl>
-              <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
+              <Input 
+                type="tel" 
+                {...field}
+                onKeyPress={(e) => {
+                  // Allow only numbers and +
+                  const allowedChars = /[0-9+]/
+                  if (!allowedChars.test(e.key)) {
+                    e.preventDefault()
+                  }
+                }}
+                onChange={(e) => {
+                  // Remove any non-allowed characters
+                  const value = e.target.value.replace(/[^0-9+]/g, '')
+                  field.onChange(value)
+                }}
+              />
             </FormControl>
             <p className="text-sm text-silver-600">For courier SMS notifications</p>
             <FormMessage />

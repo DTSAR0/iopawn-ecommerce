@@ -100,7 +100,6 @@ export function PaymentMethodForm({ form }: PaymentMethodFormProps) {
                   <FormLabel>Card Number</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="1234 5678 9012 3456"
                       {...field}
                       onChange={(e) => {
                         // Format card number with spaces
@@ -127,7 +126,6 @@ export function PaymentMethodForm({ form }: PaymentMethodFormProps) {
                     <FormLabel>Expiry Date</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="MM/YY"
                         {...field}
                         onChange={(e) => {
                           // Format expiry date
@@ -150,7 +148,6 @@ export function PaymentMethodForm({ form }: PaymentMethodFormProps) {
                     <FormLabel>CVC</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="123"
                         {...field}
                         onChange={(e) => {
                           // Only allow numbers

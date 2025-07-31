@@ -35,7 +35,7 @@ const checkoutSchema = z
       .max(20, "Phone number cannot exceed 20 characters"),
 
     // Payment
-    paymentMethod: z.enum(["card", "paypal"]),
+    paymentMethod: z.enum(["card", "paypal", "apple-pay", "google-pay"]),
     cardNumber: z.string().optional(),
     cardExpiry: z.string().optional(),
     cardCvc: z.string().optional(),
