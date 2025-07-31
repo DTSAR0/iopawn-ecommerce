@@ -128,6 +128,8 @@ export function CheckoutForm() {
     setIsSubmitting(true)
 
     try {
+      console.log("Starting order creation process...");
+      
       // Prepare order items from cart
       const orderItems = items.map(item => ({
         productId: item.product.id,
@@ -136,8 +138,32 @@ export function CheckoutForm() {
         priceCents: Math.round(item.product.price * 100) // Convert to cents
       }))
 
+      console.log("Order items prepared:", orderItems);
+
       // Calculate total in cents
       const totalCents = Math.round(getTotalPrice() * 100)
+      console.log("Total cents:", totalCents);
+
+      const orderPayload = {
+        email: data.email,
+        phone: data.phone,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        country: data.country,
+        streetAddress: data.streetAddress,
+        city: data.city,
+        state: data.state,
+        zipCode: data.zipCode,
+        paymentMethod: data.paymentMethod,
+        cardName: data.cardName,
+        cardNumber: data.cardNumber,
+        cardExpiry: data.cardExpiry,
+        cardCvc: data.cardCvc,
+        orderItems,
+        totalCents
+      };
+
+      console.log("Sending order data:", orderPayload);
 
       // Create order in database
       const orderResponse = await fetch('/api/orders/create', {
@@ -145,32 +171,21 @@ export function CheckoutForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: data.email,
-          phone: data.phone,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          country: data.country,
-          streetAddress: data.streetAddress,
-          city: data.city,
-          state: data.state,
-          zipCode: data.zipCode,
-          paymentMethod: data.paymentMethod,
-          cardName: data.cardName,
-          cardNumber: data.cardNumber,
-          cardExpiry: data.cardExpiry,
-          cardCvc: data.cardCvc,
-          orderItems,
-          totalCents
-        })
+        body: JSON.stringify(orderPayload)
       })
 
+      console.log("Order response status:", orderResponse.status);
+
       if (!orderResponse.ok) {
-        throw new Error('Failed to create order')
+        const errorData = await orderResponse.json();
+        console.error("Order creation failed:", errorData);
+        throw new Error(`Failed to create order: ${errorData.error || 'Unknown error'}`)
       }
 
-      const orderData = await orderResponse.json()
-      const orderId = orderData.orderId
+      const responseData = await orderResponse.json()
+      console.log("Order created successfully:", responseData);
+      
+      const orderId = responseData.orderId
 
       // Clear cart
       clearCart()
@@ -186,7 +201,7 @@ export function CheckoutForm() {
       console.error('Order creation error:', error)
       toast({
         title: "Error placing order",
-        description: "Please try again or contact support.",
+        description: error instanceof Error ? error.message : "Please try again or contact support.",
         variant: "destructive",
       })
     } finally {
