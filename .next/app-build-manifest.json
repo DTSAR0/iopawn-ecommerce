@@ -16,10 +16,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/catalogue/page.js"
     ],
-    "/product/[id]/page": [
+    "/api/cart/validate/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/product/[id]/page.js"
+      "static/chunks/app/api/cart/validate/route.js"
+    ],
+    "/api/orders/create/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/orders/create/route.js"
+    ],
+    "/order-confirmation/[orderId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/order-confirmation/[orderId]/page.js"
     ],
     "/page": [
       "static/chunks/webpack.js",

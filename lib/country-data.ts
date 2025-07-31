@@ -139,6 +139,23 @@ export const countryData: Record<string, CountryData> = {
       lastNames: ['Sato', 'Suzuki', 'Takahashi', 'Tanaka', 'Watanabe', 'Ito', 'Yamamoto', 'Nakamura', 'Kobayashi', 'Kato', 'Yoshida', 'Yamada', 'Sasaki', 'Yamaguchi', 'Saito', 'Matsumoto', 'Inoue', 'Kimura', 'Hayashi', 'Shimizu']
     },
     cities: ['Tokyo', 'Yokohama', 'Osaka', 'Nagoya', 'Sapporo', 'Fukuoka', 'Kobe', 'Kyoto', 'Kawasaki', 'Saitama']
+  },
+  PL: {
+    code: 'PL',
+    name: 'Poland',
+    phoneCode: '+48',
+    phoneFormat: '### ### ###',
+    addressFormat: {
+      hasState: false,
+      stateLabel: 'Voivodeship',
+      zipLabel: 'Postal Code',
+      zipFormat: '##-###'
+    },
+    names: {
+      firstNames: ['Jakub', 'Zuzanna', 'Jan', 'Lena', 'Szymon', 'Julia', 'Antoni', 'Maja', 'Filip', 'Hanna', 'Mikołaj', 'Aleksandra', 'Wojciech', 'Natalia', 'Kacper', 'Wiktoria', 'Adam', 'Karolina', 'Michał', 'Martyna'],
+      lastNames: ['Nowak', 'Kowalski', 'Wiśniewski', 'Wójcik', 'Kowalczyk', 'Kamiński', 'Lewandowski', 'Zieliński', 'Szymański', 'Woźniak', 'Dąbrowski', 'Kozłowski', 'Mazur', 'Jankowski', 'Wojciechowski', 'Kwiatkowski', 'Krawczyk', 'Kaczmarek', 'Piotrowski', 'Grabowski']
+    },
+    cities: ['Warszawa', 'Kraków', 'Łódź', 'Wrocław', 'Poznań', 'Gdańsk', 'Szczecin', 'Bydgoszcz', 'Lublin', 'Katowice']
   }
 }
 

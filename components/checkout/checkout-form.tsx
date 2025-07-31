@@ -61,24 +61,116 @@ export function CheckoutForm() {
   const [promoDiscount, setPromoDiscount] = useState(0)
   const router = useRouter()
   const { toast } = useToast()
-  const { clearCart } = useCartStore()
+  const { clearCart, items, getTotalPrice } = useCartStore()
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       paymentMethod: "card",
     },
+    mode: "onChange", // Enable real-time validation
   })
 
+  const paymentMethod = form.watch("paymentMethod")
+  const cardNumber = form.watch("cardNumber")
+  const cardExpiry = form.watch("cardExpiry")
+  const cardCvc = form.watch("cardCvc")
+  const cardName = form.watch("cardName")
+
+  // Check if card fields are valid
+  const isCardValid = paymentMethod === "card" ? 
+    Boolean(cardNumber && cardExpiry && cardCvc && cardName) : true
+
   const onSubmit = async (data: CheckoutFormData) => {
+    // Additional front-end validation for card payment
+    if (data.paymentMethod === "card") {
+      if (!data.cardNumber || !data.cardExpiry || !data.cardCvc || !data.cardName) {
+        toast({
+          title: "Card information incomplete",
+          description: "Please fill in all card details to continue.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Basic card number validation (Luhn algorithm would be better in production)
+      const cleanCardNumber = data.cardNumber.replace(/\s/g, "")
+      if (cleanCardNumber.length < 13 || cleanCardNumber.length > 19) {
+        toast({
+          title: "Invalid card number",
+          description: "Please enter a valid card number.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Basic expiry validation
+      if (!/^\d{2}\/\d{2}$/.test(data.cardExpiry)) {
+        toast({
+          title: "Invalid expiry date",
+          description: "Please enter expiry date in MM/YY format.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Basic CVC validation
+      if (data.cardCvc.length < 3 || data.cardCvc.length > 4) {
+        toast({
+          title: "Invalid CVC",
+          description: "Please enter a valid 3 or 4 digit CVC.",
+          variant: "destructive",
+        })
+        return
+      }
+    }
+
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Prepare order items from cart
+      const orderItems = items.map(item => ({
+        productId: item.product.id,
+        productSlug: item.product.slug || item.product.id,
+        quantity: item.quantity,
+        priceCents: Math.round(item.product.price * 100) // Convert to cents
+      }))
 
-      // Generate order ID
-      const orderId = Math.random().toString(36).substr(2, 9)
+      // Calculate total in cents
+      const totalCents = Math.round(getTotalPrice() * 100)
+
+      // Create order in database
+      const orderResponse = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          phone: data.phone,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          country: data.country,
+          streetAddress: data.streetAddress,
+          city: data.city,
+          state: data.state,
+          zipCode: data.zipCode,
+          paymentMethod: data.paymentMethod,
+          cardName: data.cardName,
+          cardNumber: data.cardNumber,
+          cardExpiry: data.cardExpiry,
+          cardCvc: data.cardCvc,
+          orderItems,
+          totalCents
+        })
+      })
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create order')
+      }
+
+      const orderData = await orderResponse.json()
+      const orderId = orderData.orderId
 
       // Clear cart
       clearCart()
@@ -91,6 +183,7 @@ export function CheckoutForm() {
       // Redirect to confirmation page
       router.push(`/order-confirmation/${orderId}`)
     } catch (error) {
+      console.error('Order creation error:', error)
       toast({
         title: "Error placing order",
         description: "Please try again or contact support.",
@@ -152,9 +245,21 @@ export function CheckoutForm() {
           transition={{ delay: 0.6 }}
           className="sticky bottom-0 bg-silver-50 py-4 -mx-4 px-4 lg:static lg:bg-transparent lg:py-0 lg:mx-0 lg:px-0"
         >
-          <Button type="submit" size="lg" className="w-full" disabled={isSubmitting || !form.formState.isValid}>
+          <Button 
+            type="submit" 
+            size="lg" 
+            className="w-full" 
+            disabled={isSubmitting || !form.formState.isValid || !isCardValid}
+          >
             {isSubmitting ? "Placing Order..." : "Place Order"}
           </Button>
+          
+          {/* Card validation feedback */}
+          {paymentMethod === "card" && !isCardValid && (
+            <p className="text-sm text-red-600 mt-2 text-center">
+              Please complete all card information to continue
+            </p>
+          )}
         </motion.div>
       </form>
     </Form>

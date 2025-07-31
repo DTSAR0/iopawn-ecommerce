@@ -15,20 +15,24 @@ async function main() {
   });
 
   const existingProduct = await db.product.findUnique({
-    where: { slug: "silver-ring-3" }
+    where: { slug: "silver-ring-4" }
   });
 
   if (!existingProduct) {
-    await db.product.create({
+    const product = await db.product.create({
       data: {
-        name: "Silver Ring 3",
-        slug: "silver-ring-3",
-        description: "925 Sterling Silver Ring 3",
-        priceCents: 4500,
+        name: "Silver Ring 4",
+        slug: "silver-ring-4",
+        description: "925 Sterling Silver Ring 4",
+        priceCents: 4400,
+        stockQuantity: 2,
         categoryId: category.id,  
         featured: true
       }
     });
+    console.log('✅ Product created:', product.name);
+  } else {
+    console.log('ℹ️  Product already exists:', existingProduct.name);
   }
 }
 
