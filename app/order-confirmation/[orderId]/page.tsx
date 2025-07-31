@@ -15,16 +15,12 @@ export default function OrderConfirmationPage() {
   const orderId = params.orderId as string
 
   useEffect(() => {
-    console.log("Order confirmation page loaded with orderId:", orderId)
     setMounted(true)
   }, [orderId])
 
   if (!mounted) {
-    console.log("Page not mounted yet")
     return null
   }
-
-  console.log("Rendering order confirmation page")
 
   return (
     <div className="min-h-screen bg-silver-50 py-16">

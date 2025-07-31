@@ -128,8 +128,6 @@ export function CheckoutForm() {
     setIsSubmitting(true)
 
     try {
-      console.log("Starting order creation process...");
-      
       // Prepare order items from cart
       const orderItems = items.map(item => ({
         productId: item.product.id,
@@ -138,11 +136,8 @@ export function CheckoutForm() {
         priceCents: Math.round(item.product.price * 100) // Convert to cents
       }))
 
-      console.log("Order items prepared:", orderItems);
-
       // Calculate total in cents
       const totalCents = Math.round(getTotalPrice() * 100)
-      console.log("Total cents:", totalCents);
 
       const orderPayload = {
         email: data.email,
@@ -163,9 +158,7 @@ export function CheckoutForm() {
         totalCents
       };
 
-      console.log("Sending order data:", orderPayload);
-
-      // Create order in database
+      // Create order in database first
       const orderResponse = await fetch('/api/orders/create', {
         method: 'POST',
         headers: {
@@ -174,29 +167,43 @@ export function CheckoutForm() {
         body: JSON.stringify(orderPayload)
       })
 
-      console.log("Order response status:", orderResponse.status);
-
       if (!orderResponse.ok) {
         const errorData = await orderResponse.json();
-        console.error("Order creation failed:", errorData);
         throw new Error(`Failed to create order: ${errorData.error || 'Unknown error'}`)
       }
 
       const responseData = await orderResponse.json()
-      console.log("Order created successfully:", responseData);
-      
       const orderId = responseData.orderId
+
+      // Create Stripe checkout session
+      const sessionResponse = await fetch('/api/payments/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: items,
+          orderId: orderId,
+          customerEmail: data.email
+        })
+      })
+
+      if (!sessionResponse.ok) {
+        throw new Error('Failed to create checkout session')
+      }
+
+      const sessionData = await sessionResponse.json()
 
       // Clear cart
       clearCart()
 
       toast({
-        title: "Order placed successfully!",
-        description: "You will receive a confirmation email shortly.",
+        title: "Redirecting to payment...",
+        description: "Please complete your payment to finalize your order.",
       })
 
-      // Redirect to confirmation page
-      router.push(`/order-confirmation/${orderId}`)
+      // Redirect to Stripe Checkout
+      window.location.href = sessionData.url
     } catch (error) {
       console.error('Order creation error:', error)
       toast({
