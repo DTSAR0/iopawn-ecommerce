@@ -3,9 +3,9 @@ import { db } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("🔄 Confirming order and updating stock...");
+    console.log("🔄 Creating order in database and updating stock...");
     const body = await req.json();
-    const { orderId } = body;
+    const { orderId, orderData } = body;
     
     console.log("📦 Order confirmation request:", { orderId });
 
@@ -17,56 +17,144 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get the order with its items
-    const order = await db.order.findUnique({
-      where: { id: orderId },
-      select: {
-        id: true,
-        status: true,
-        orderItems: true
+    if (!orderData) {
+      console.log("❌ Missing orderData - checking if order exists in database");
+      
+      // If no orderData provided, check if order already exists in database
+      const existingOrderWithData = await db.order.findUnique({
+        where: { id: orderId },
+        select: {
+          id: true,
+          status: true,
+          orderItems: true
+        }
+      });
+
+      if (existingOrderWithData && existingOrderWithData.status === "PENDING") {
+        console.log("✅ Found existing pending order, updating to PAID");
+        const updatedOrder = await db.order.update({
+          where: { id: orderId },
+          data: { status: "PAID" }
+        });
+        
+        // Update stock quantities for existing order
+        const orderItems = existingOrderWithData.orderItems as any[];
+        for (const item of orderItems) {
+          const product = await db.product.findUnique({
+            where: { id: item.productId },
+            select: { stockQuantity: true }
+          });
+
+          if (!product) {
+            console.log(`❌ Product ${item.productId} not found`);
+            continue;
+          }
+
+          const newStockQuantity = product.stockQuantity - item.quantity;
+          if (newStockQuantity <= 0) {
+            await db.product.delete({ where: { id: item.productId } });
+            console.log(`🗑️  Product ${item.productId} deleted (stock reached 0)`);
+          } else {
+            await db.product.update({
+              where: { id: item.productId },
+              data: { stockQuantity: newStockQuantity }
+            });
+            console.log(`📦 Updated stock for product ${item.productId}: ${newStockQuantity}`);
+          }
+        }
+
+        return NextResponse.json({
+          success: true,
+          orderId: updatedOrder.id,
+          status: updatedOrder.status
+        });
+      } else if (existingOrderWithData && existingOrderWithData.status === "PAID") {
+        console.log("✅ Order already confirmed");
+        return NextResponse.json({
+          success: true,
+          message: "Order already confirmed",
+          orderId: existingOrderWithData.id
+        });
+      } else {
+        console.log("❌ No orderData and no existing order found");
+        return NextResponse.json(
+          { success: false, error: "Order data not found" },
+          { status: 404 }
+        );
       }
+    }
+
+    // Check if order already exists
+    const existingOrder = await db.order.findUnique({
+      where: { id: orderId },
+      select: { id: true, status: true }
     });
 
-    if (!order) {
-      console.log("❌ Order not found:", orderId);
-      return NextResponse.json(
-        { success: false, error: "Order not found" },
-        { status: 404 }
-      );
+    if (existingOrder) {
+      // Order already exists, check if it's already confirmed
+      if (existingOrder.status === "PAID") {
+        console.log("✅ Order already confirmed:", orderId);
+        return NextResponse.json({
+          success: true,
+          message: "Order already confirmed",
+          orderId: existingOrder.id
+        });
+      }
+
+      // Order exists but not paid, update status
+      if (existingOrder.status === "PENDING") {
+        console.log("✅ Order exists and eligible for confirmation");
+      } else {
+        console.log("❌ Order status is not PENDING:", existingOrder.status);
+        return NextResponse.json(
+          { success: false, error: "Order cannot be confirmed" },
+          { status: 400 }
+        );
+      }
+    } else {
+      console.log("✅ Creating new order in database");
     }
 
-    // Check if order is already confirmed
-    if (order.status === "PAID") {
-      console.log("✅ Order already confirmed:", orderId);
-      return NextResponse.json({
-        success: true,
-        message: "Order already confirmed",
-        orderId: order.id
+    // Get order items from orderData or existing order
+    const orderItems = orderData.orderItems || [];
+    
+    // Create or update the order in the database
+    let finalOrder;
+    if (existingOrder) {
+      // Update existing order status to PAID
+      finalOrder = await db.order.update({
+        where: { id: orderId },
+        data: { status: "PAID" }
       });
+      console.log("✅ Updated existing order status to PAID");
+    } else {
+      // Create new order in database
+      finalOrder = await db.order.create({
+        data: {
+          id: orderId,
+          email: orderData.email,
+          phone: orderData.phone,
+          firstName: orderData.firstName,
+          lastName: orderData.lastName,
+          country: orderData.country,
+          streetAddress: orderData.streetAddress,
+          city: orderData.city,
+          state: orderData.state,
+          zipCode: orderData.zipCode,
+          paymentMethod: "stripe",
+          cardName: null,
+          cardNumber: null,
+          cardExpiry: null,
+          cardCvc: null,
+          orderItems: orderData.orderItems,
+          totalCents: orderData.totalCents,
+          status: "PAID"
+        }
+      });
+      console.log("✅ Created new order in database with PAID status");
     }
-
-    // Check if order is cancelled
-    if (order.status === "CANCELLED") {
-      console.log("❌ Order is cancelled:", orderId);
-      return NextResponse.json(
-        { success: false, error: "Order is cancelled" },
-        { status: 400 }
-      );
-    }
-
-    // Check if order is pending (should be for new confirmations)
-    if (order.status !== "PENDING") {
-      console.log("❌ Order status is not PENDING:", order.status);
-      return NextResponse.json(
-        { success: false, error: "Order cannot be confirmed" },
-        { status: 400 }
-      );
-    }
-
-    console.log("✅ Order found and eligible for confirmation");
 
     // Update product stock quantities
-    const orderItems = order.orderItems as any[];
     for (const item of orderItems) {
       // First, get the current stock quantity
       const product = await db.product.findUnique({
@@ -100,18 +188,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Update order status to PAID
-    const updatedOrder = await db.order.update({
-      where: { id: orderId },
-      data: { status: "PAID" }
-    });
-
     console.log("✅ Order confirmed and stock updated:", orderId);
 
     return NextResponse.json({
       success: true,
-      orderId: updatedOrder.id,
-      status: updatedOrder.status
+      orderId: finalOrder.id,
+      status: finalOrder.status
     });
 
   } catch (error) {

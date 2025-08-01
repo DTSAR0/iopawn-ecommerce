@@ -93,6 +93,13 @@ export function CheckoutForm() {
 
       const responseData = await orderResponse.json()
       const orderId = responseData.orderId
+      const orderData = responseData.orderData
+
+      // Store order data in sessionStorage for confirmation
+      sessionStorage.setItem('pendingOrderData', JSON.stringify({
+        orderId,
+        orderData
+      }))
 
       // Create Stripe checkout session
       const sessionResponse = await fetch('/api/payments/create-session', {

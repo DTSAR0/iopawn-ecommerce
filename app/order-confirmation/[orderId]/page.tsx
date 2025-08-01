@@ -32,12 +32,27 @@ export default function OrderConfirmationPage() {
       console.log("🔄 Confirming order:", orderId)
 
       try {
+        // Get order data from sessionStorage
+        const pendingOrderData = sessionStorage.getItem('pendingOrderData')
+        let orderData = null
+
+        if (pendingOrderData) {
+          const parsed = JSON.parse(pendingOrderData)
+          if (parsed.orderId === orderId) {
+            orderData = parsed.orderData
+            console.log("✅ Found order data in sessionStorage")
+          }
+        }
+
         const response = await fetch('/api/orders/confirm', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ orderId }),
+          body: JSON.stringify({ 
+            orderId,
+            orderData 
+          }),
         })
 
         const result = await response.json()
@@ -45,6 +60,8 @@ export default function OrderConfirmationPage() {
         if (result.success) {
           console.log("✅ Order confirmed successfully:", result)
           setOrderConfirmed(true)
+          // Clear the pending order data from sessionStorage
+          sessionStorage.removeItem('pendingOrderData')
         } else {
           console.error("❌ Failed to confirm order:", result.error)
         }

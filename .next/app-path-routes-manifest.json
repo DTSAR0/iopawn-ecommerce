@@ -1,10 +1,10 @@
 {
   "/api/orders/confirm/route": "/api/orders/confirm",
   "/api/orders/create/route": "/api/orders/create",
-  "/api/payments/create-session/route": "/api/payments/create-session",
-  "/api/cart/validate/route": "/api/cart/validate",
-  "/api/products/route": "/api/products",
   "/_not-found/page": "/_not-found",
+  "/api/cart/validate/route": "/api/cart/validate",
+  "/api/payments/create-session/route": "/api/payments/create-session",
+  "/api/products/route": "/api/products",
   "/about/page": "/about",
   "/order-confirmation/[orderId]/page": "/order-confirmation/[orderId]",
   "/checkout/page": "/checkout",

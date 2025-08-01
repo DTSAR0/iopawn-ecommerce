@@ -44,16 +44,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("✅ Validation passed, creating order...");
+    console.log("✅ Validation passed, generating order ID...");
 
-    // Generate a shorter order ID
+    // Generate a shorter order ID (but don't create order yet)
     const orderId = generateShortOrderId();
     console.log("🆔 Generated order ID:", orderId);
+    console.log("📦 Order will be created in database only after payment confirmation");
 
-    // Create the order in the database
-    const order = await db.order.create({
-      data: {
-        id: orderId,
+    // Return the order ID for Stripe session creation
+    // The actual order will be created in the confirm endpoint after payment
+
+    return NextResponse.json({
+      success: true,
+      orderId: orderId,
+      orderData: {
         email,
         phone,
         firstName,
@@ -63,24 +67,9 @@ export async function POST(req: NextRequest) {
         city,
         state,
         zipCode,
-        paymentMethod: "stripe", // Default to Stripe since we removed payment method selection
-        cardName: null,
-        cardNumber: null,
-        cardExpiry: null,
-        cardCvc: null,
         orderItems,
-        totalCents,
-        status: "PENDING"
+        totalCents
       }
-    });
-
-    console.log("✅ Order created:", order.id);
-    console.log("📦 Stock quantities will be updated after payment confirmation");
-
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      order
     });
 
   } catch (error) {

@@ -25,30 +25,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/",
-      "dataRoute": "/index.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/about": {
       "experimentalBypassFor": [
         {
@@ -72,13 +48,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/",
+      "dataRoute": "/index.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "58957cde29efccece383764606dfc6ff",
-    "previewModeSigningKey": "e57860b9470f9e431a8ce2e6e412f7518cec9a6f4a3c7588e1b352737f7b7428",
-    "previewModeEncryptionKey": "924ec76a68643eafca73ed0f30b8dd40b2e7f82cec0f3675e727cdb39682458d"
+    "previewModeId": "90418af1ceda522275604b8f93901e76",
+    "previewModeSigningKey": "9728157dc67d256d69b1e8c21fa687760074688762854aea601d35bf13d0b6c2",
+    "previewModeEncryptionKey": "16680cf8d8cf98e694c8641f130839607bc15fc37347286160798ba75adb1309"
   }
 }
