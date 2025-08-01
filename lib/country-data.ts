@@ -168,6 +168,7 @@ export const countryData: Record<string, CountryData> = {
       zipLabel: 'Postal Code',
       zipFormat: '####'
     },
+    //andriylox
     names: {
       firstNames: ['Enea', 'Alesia', 'Mateo', 'Eva', 'Leo', 'Aria', 'Noah', 'Mia', 'Liam', 'Sofia', 'Aron', 'Emma', 'Dario', 'Greta', 'Niko', 'Luna', 'Erik', 'Aida', 'Kleo', 'Ela'],
       lastNames: ['Hoxha', 'Shehu', 'Meksi', 'Basha', 'Dervishi', 'Kola', 'Leka', 'Mema', 'Ndoja', 'Papa', 'Rama', 'Sali', 'Tola', 'Vata', 'Xhafa', 'Ylli', 'Zeka', 'Bardhi', 'Cela', 'Doda']
