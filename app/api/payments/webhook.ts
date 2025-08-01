@@ -56,12 +56,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log("💳 Checkout session completed, orderId:", sessionOrderId);
         
         if (sessionOrderId) {
-          const updatedOrder = await db.order.update({ 
-            where: { id: sessionOrderId }, 
-            data: { status: "PAID" } 
-          })
-          console.log(`✅ Order ${sessionOrderId} marked as PAID via checkout session`);
-          console.log("📋 Updated order:", { id: updatedOrder.id, status: updatedOrder.status });
+          console.log(`✅ Checkout session completed for order ${sessionOrderId}`);
+          console.log("📋 Order will be confirmed when user lands on confirmation page");
         } else {
           console.log("❌ No orderId found in session metadata");
         }
@@ -73,12 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log("💳 Payment intent succeeded, orderId:", orderId);
         
         if (orderId) {
-          const updatedOrder = await db.order.update({ 
-            where: { id: orderId }, 
-            data: { status: "PAID" } 
-          })
-          console.log(`✅ Order ${orderId} marked as PAID via payment intent`);
-          console.log("📋 Updated order:", { id: updatedOrder.id, status: updatedOrder.status });
+          console.log(`✅ Payment intent succeeded for order ${orderId}`);
+          console.log("📋 Order will be confirmed when user lands on confirmation page");
         } else {
           console.log("❌ No orderId found in payment intent metadata");
         }

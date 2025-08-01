@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,12 +11,52 @@ import Link from "next/link"
 export default function OrderConfirmationPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [mounted, setMounted] = useState(false)
+  const [orderConfirmed, setOrderConfirmed] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
   const orderId = params.orderId as string
+  const success = searchParams.get('success')
 
   useEffect(() => {
     setMounted(true)
   }, [orderId])
+
+  useEffect(() => {
+    const confirmOrder = async () => {
+      if (!mounted || !orderId || !success || orderConfirmed || isConfirming) {
+        return
+      }
+
+      setIsConfirming(true)
+      console.log("🔄 Confirming order:", orderId)
+
+      try {
+        const response = await fetch('/api/orders/confirm', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ orderId }),
+        })
+
+        const result = await response.json()
+
+        if (result.success) {
+          console.log("✅ Order confirmed successfully:", result)
+          setOrderConfirmed(true)
+        } else {
+          console.error("❌ Failed to confirm order:", result.error)
+        }
+      } catch (error) {
+        console.error("❌ Error confirming order:", error)
+      } finally {
+        setIsConfirming(false)
+      }
+    }
+
+    confirmOrder()
+  }, [mounted, orderId, success, orderConfirmed, isConfirming])
 
   if (!mounted) {
     return null
@@ -40,9 +80,14 @@ export default function OrderConfirmationPage() {
 
           {/* Success Message */}
           <div className="space-y-4">
-            <h1 className="text-4xl font-light text-silver-900">Order Confirmed!</h1>
+            <h1 className="text-4xl font-light text-silver-900">
+              {isConfirming ? "Confirming Order..." : "Order Confirmed!"}
+            </h1>
             <p className="text-xl text-silver-600">
-              Thank you for your purchase. Your order has been successfully placed.
+              {isConfirming 
+                ? "Please wait while we finalize your order..."
+                : "Thank you for your purchase. Your order has been successfully placed."
+              }
             </p>
           </div>
 

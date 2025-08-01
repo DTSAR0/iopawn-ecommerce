@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
+import { generateShortOrderId } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,9 +46,14 @@ export async function POST(req: NextRequest) {
 
     console.log("✅ Validation passed, creating order...");
 
+    // Generate a shorter order ID
+    const orderId = generateShortOrderId();
+    console.log("🆔 Generated order ID:", orderId);
+
     // Create the order in the database
     const order = await db.order.create({
       data: {
+        id: orderId,
         email,
         phone,
         firstName,
@@ -69,42 +75,7 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("✅ Order created:", order.id);
-
-    // Update product stock quantities
-    for (const item of orderItems) {
-      // First, get the current stock quantity
-      const product = await db.product.findUnique({
-        where: { id: item.productId },
-        select: { stockQuantity: true }
-      });
-
-      if (!product) {
-        console.log(`❌ Product ${item.productId} not found`);
-        continue;
-      }
-
-      const newStockQuantity = product.stockQuantity - item.quantity;
-      console.log(`📦 Product ${item.productId}: ${product.stockQuantity} - ${item.quantity} = ${newStockQuantity}`);
-
-      if (newStockQuantity <= 0) {
-        // Delete the product if stock reaches 0 or goes below
-        await db.product.delete({
-          where: { id: item.productId }
-        });
-        console.log(`🗑️  Product ${item.productId} deleted (stock reached 0)`);
-      } else {
-        // Update stock quantity normally
-        await db.product.update({
-          where: { id: item.productId },
-          data: {
-            stockQuantity: newStockQuantity
-          }
-        });
-        console.log(`📦 Updated stock for product ${item.productId}: ${newStockQuantity}`);
-      }
-    }
-
-    console.log("✅ Stock quantities updated");
+    console.log("📦 Stock quantities will be updated after payment confirmation");
 
     return NextResponse.json({
       success: true,
