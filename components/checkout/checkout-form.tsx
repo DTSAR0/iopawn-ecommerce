@@ -13,46 +13,26 @@ import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
 import { useCartStore } from "@/lib/store"
 import { SmartAddressForm } from "./smart-address-form"
-import { PaymentMethodForm } from "./payment-method-form"
 
-const checkoutSchema = z
-  .object({
-    // Address Information
-    country: z.string().min(1, "Country is required"),
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    streetAddress: z.string().min(1, "Street address is required"),
-    city: z.string().min(1, "City is required"),
-    state: z.string().optional(),
-    zipCode: z.string().min(1, "ZIP/Postal code is required"),
-    
-    // Contact Information
-    email: z.string().email("Invalid email address"),
-    phone: z.string()
-      .min(1, "Phone number is required")
-      .regex(/^[0-9+\-\(\)\s]+$/, "Phone number can only contain numbers, +, -, (, ), and spaces")
-      .min(7, "Phone number must be at least 7 digits")
-      .max(20, "Phone number cannot exceed 20 characters"),
 
-    // Payment
-    paymentMethod: z.enum(["card", "paypal", "apple-pay", "google-pay"]),
-    cardNumber: z.string().optional(),
-    cardExpiry: z.string().optional(),
-    cardCvc: z.string().optional(),
-    cardName: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.paymentMethod === "card") {
-        return data.cardNumber && data.cardExpiry && data.cardCvc && data.cardName
-      }
-      return true
-    },
-    {
-      message: "Card details are required for card payment",
-      path: ["cardNumber"],
-    },
-  )
+const checkoutSchema = z.object({
+  // Address Information
+  country: z.string().min(1, "Country is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  streetAddress: z.string().min(1, "Street address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().optional(),
+  zipCode: z.string().min(1, "ZIP/Postal code is required"),
+  
+  // Contact Information
+  email: z.string().email("Invalid email address"),
+  phone: z.string()
+    .min(1, "Phone number is required")
+    .regex(/^[0-9+\-\(\)\s]+$/, "Phone number can only contain numbers, +, -, (, ), and spaces")
+    .min(7, "Phone number must be at least 7 digits")
+    .max(20, "Phone number cannot exceed 20 characters"),
+})
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>
 
@@ -65,66 +45,10 @@ export function CheckoutForm() {
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
-    defaultValues: {
-      paymentMethod: "card",
-    },
     mode: "onChange", // Enable real-time validation
   })
 
-  const paymentMethod = form.watch("paymentMethod")
-  const cardNumber = form.watch("cardNumber")
-  const cardExpiry = form.watch("cardExpiry")
-  const cardCvc = form.watch("cardCvc")
-  const cardName = form.watch("cardName")
-
-  // Check if card fields are valid
-  const isCardValid = paymentMethod === "card" ? 
-    Boolean(cardNumber && cardExpiry && cardCvc && cardName) : true
-
   const onSubmit = async (data: CheckoutFormData) => {
-    // Additional front-end validation for card payment
-    if (data.paymentMethod === "card") {
-      if (!data.cardNumber || !data.cardExpiry || !data.cardCvc || !data.cardName) {
-        toast({
-          title: "Card information incomplete",
-          description: "Please fill in all card details to continue.",
-          variant: "destructive",
-        })
-        return
-      }
-
-      // Basic card number validation (Luhn algorithm would be better in production)
-      const cleanCardNumber = data.cardNumber.replace(/\s/g, "")
-      if (cleanCardNumber.length < 13 || cleanCardNumber.length > 19) {
-        toast({
-          title: "Invalid card number",
-          description: "Please enter a valid card number.",
-          variant: "destructive",
-        })
-        return
-      }
-
-      // Basic expiry validation
-      if (!/^\d{2}\/\d{2}$/.test(data.cardExpiry)) {
-        toast({
-          title: "Invalid expiry date",
-          description: "Please enter expiry date in MM/YY format.",
-          variant: "destructive",
-        })
-        return
-      }
-
-      // Basic CVC validation
-      if (data.cardCvc.length < 3 || data.cardCvc.length > 4) {
-        toast({
-          title: "Invalid CVC",
-          description: "Please enter a valid 3 or 4 digit CVC.",
-          variant: "destructive",
-        })
-        return
-      }
-    }
-
     setIsSubmitting(true)
 
     try {
@@ -149,11 +73,6 @@ export function CheckoutForm() {
         city: data.city,
         state: data.state,
         zipCode: data.zipCode,
-        paymentMethod: data.paymentMethod,
-        cardName: data.cardName,
-        cardNumber: data.cardNumber,
-        cardExpiry: data.cardExpiry,
-        cardCvc: data.cardCvc,
         orderItems,
         totalCents
       };
@@ -249,17 +168,7 @@ export function CheckoutForm() {
           </Card>
         </motion.div>
 
-        {/* Payment Method */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment Method</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PaymentMethodForm form={form} />
-            </CardContent>
-          </Card>
-        </motion.div>
+
 
         {/* Submit Button - Sticky on mobile */}
         <motion.div
@@ -272,17 +181,10 @@ export function CheckoutForm() {
             type="submit" 
             size="lg" 
             className="w-full" 
-            disabled={isSubmitting || !form.formState.isValid || !isCardValid}
+            disabled={isSubmitting || !form.formState.isValid}
           >
             {isSubmitting ? "Placing Order..." : "Place Order"}
           </Button>
-          
-          {/* Card validation feedback */}
-          {paymentMethod === "card" && !isCardValid && (
-            <p className="text-sm text-red-600 mt-2 text-center">
-              Please complete all card information to continue
-            </p>
-          )}
         </motion.div>
       </form>
     </Form>
