@@ -194,6 +194,10 @@ export async function POST(req: NextRequest) {
     // Send order confirmation email
     try {
       const orderItems = finalOrder.orderItems as any[];
+      console.log("📧 Attempting to send email to:", finalOrder.email);
+      console.log("📧 Order items:", orderItems);
+      console.log("📧 Total cents:", finalOrder.totalCents);
+      
       await sendOrderConfirmation(
         finalOrder.email,
         finalOrder.id,

@@ -50,6 +50,9 @@ export function CheckoutForm() {
 
   const onSubmit = async (data: CheckoutFormData) => {
     setIsSubmitting(true)
+    
+    console.log("📝 Form data submitted:", data);
+    console.log("📧 Email from form:", data.email);
 
     try {
       // Prepare order items from cart
@@ -76,6 +79,8 @@ export function CheckoutForm() {
         orderItems,
         totalCents
       };
+      
+      console.log("📦 Order payload being sent:", orderPayload);
 
       // Create order in database first
       const orderResponse = await fetch('/api/orders/create', {
@@ -165,7 +170,7 @@ export function CheckoutForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input type="email" placeholder="john@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
