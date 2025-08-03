@@ -4,6 +4,7 @@ import { sendOrderConfirmation } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("➡️ confirm route hit", req.method, req.url);
     console.log("🔄 Creating order in database and updating stock...");
     const body = await req.json();
     const { orderId, orderData } = body;
@@ -190,6 +191,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("✅ Order confirmed and stock updated:", orderId);
+    console.log("order.status before send:", finalOrder.status);
 
     // Send order confirmation email
     try {
@@ -204,7 +206,7 @@ export async function POST(req: NextRequest) {
         orderItems,
         finalOrder.totalCents
       );
-      console.log("📧 Order confirmation email sent successfully");
+      console.log("✅ email send triggered");
     } catch (emailError) {
       console.error("❌ Failed to send order confirmation email:", emailError);
       // Don't fail the order confirmation if email fails

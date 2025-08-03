@@ -12,6 +12,8 @@ if (!process.env.EMAIL_FROM) {
 }
 
 export async function sendOrderConfirmation(email: string, orderId: string, items: any[], totalCents: number) {
+  console.log("📧 sendOrderConfirmation called with:", { email, orderId, itemsCount: items.length, totalCents });
+  
   // Check if email service is configured
   if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
     console.warn('⚠️ Email service not configured. Skipping email send.')

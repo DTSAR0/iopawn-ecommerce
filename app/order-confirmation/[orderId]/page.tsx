@@ -44,6 +44,8 @@ export default function OrderConfirmationPage() {
           }
         }
 
+        console.log("📞 Calling /api/orders/confirm with:", { orderId, orderData });
+        
         const response = await fetch('/api/orders/confirm', {
           method: 'POST',
           headers: {
