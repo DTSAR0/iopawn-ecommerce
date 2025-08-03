@@ -66,7 +66,7 @@ export async function sendOrderConfirmation(email: string, orderId: string, item
       </div>
       
       <div style="text-align: center; color: #666; font-size: 14px;">
-        <p>If you have any questions, please contact us at support@iopawn.com</p>
+        <p>If you have any questions, please reply to this email or contact us at iopawnshop@gmail.com</p>
         <p>Thank you for choosing IOPAWN!</p>
       </div>
     </div>
@@ -75,6 +75,7 @@ export async function sendOrderConfirmation(email: string, orderId: string, item
   await resend.emails.send({
     from: process.env.EMAIL_FROM!,
     to: email,
+    replyTo: "iopawnshop@gmail.com",
     subject: `Order Confirmation - #${orderId.toUpperCase()}`,
     html,
   })
