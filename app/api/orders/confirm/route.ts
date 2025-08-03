@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
+import { sendOrderConfirmation } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -189,6 +190,21 @@ export async function POST(req: NextRequest) {
     }
 
     console.log("✅ Order confirmed and stock updated:", orderId);
+
+    // Send order confirmation email
+    try {
+      const orderItems = finalOrder.orderItems as any[];
+      await sendOrderConfirmation(
+        finalOrder.email,
+        finalOrder.id,
+        orderItems,
+        finalOrder.totalCents
+      );
+      console.log("📧 Order confirmation email sent successfully");
+    } catch (emailError) {
+      console.error("❌ Failed to send order confirmation email:", emailError);
+      // Don't fail the order confirmation if email fails
+    }
 
     return NextResponse.json({
       success: true,

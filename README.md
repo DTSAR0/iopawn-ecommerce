@@ -30,6 +30,9 @@ A modern, minimalist e-commerce site for contemporary jewellery built with Next.
 
 - Node.js 18+ 
 - pnpm (recommended) or npm
+- PostgreSQL database
+- Resend account for email sending
+- Stripe account for payments
 
 ### Installation
 
@@ -44,12 +47,24 @@ cd iopawn-ecommerce
 pnpm install
 \`\`\`
 
-3. Start the development server:
+3. Set up environment variables:
+   Create a `.env.local` file in the root directory with the following variables:
+   \`\`\`bash
+   DATABASE_URL="postgresql://username:password@localhost:5432/iopawn_ecommerce"
+   DIRECT_URL="postgresql://username:password@localhost:5432/iopawn_ecommerce"
+   STRIPE_SECRET_KEY="sk_test_..."
+   STRIPE_WEBHOOK_SECRET="whsec_..."
+   RESEND_API_KEY="re_..."
+   EMAIL_FROM="orders@yourdomain.com"
+   NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+   \`\`\`
+
+4. Start the development server:
 \`\`\`bash
 pnpm dev
 \`\`\`
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Project Structure
 
