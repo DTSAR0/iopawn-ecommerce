@@ -1,9 +1,0 @@
-{
-  "pages": {
-    "/api/debug-flow/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/debug-flow/route.js"
-    ]
-  }
-}

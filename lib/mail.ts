@@ -72,11 +72,29 @@ export async function sendOrderConfirmation(email: string, orderId: string, item
     </div>
   `
 
-  await resend.emails.send({
-    from: process.env.EMAIL_FROM!,
-    to: email,
-    replyTo: "iopawnshop@gmail.com",
-    subject: `Order Confirmation - #${orderId.toUpperCase()}`,
-    html,
-  })
+  try {
+    const result = await resend.emails.send({
+      from: process.env.EMAIL_FROM!,
+      to: email,
+      replyTo: "iopawnshop@gmail.com",
+      subject: `Order Confirmation - #${orderId.toUpperCase()}`,
+      html,
+    });
+    
+    console.log("✅ Email sent successfully:", {
+      emailId: result.data?.id,
+      to: email,
+      from: process.env.EMAIL_FROM
+    });
+    
+    return result;
+  } catch (error) {
+    console.error("❌ Email send failed:", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      to: email,
+      from: process.env.EMAIL_FROM,
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    throw error;
+  }
 }
