@@ -1,6 +1,10 @@
+"use client"
+
 import Link from "next/link"
+import { useState } from "react"
 import { Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ContactModal } from "@/components/contact-modal"
 
 // Custom TikTok icon component
 function TikTokIcon({ className }: { className?: string }) {
@@ -17,6 +21,8 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+
   return (
     <footer className="bg-silver-50 border-t border-silver-200">
       <div className="container mx-auto px-4 py-12">
@@ -61,9 +67,12 @@ export function Footer() {
             <h3 className="font-medium text-silver-900 mb-4">Customer Care</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
+                <button 
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="text-silver-600 hover:text-primary transition-colors text-sm text-left"
+                >
                   Contact Us
-                </Link>
+                </button>
               </li>
               <li>
                 <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
@@ -117,6 +126,11 @@ export function Footer() {
           </p>
         </div>
       </div>
+      
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </footer>
   )
 }
