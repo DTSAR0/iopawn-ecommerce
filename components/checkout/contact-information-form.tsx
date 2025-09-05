@@ -5,12 +5,14 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { CheckoutFormData } from "./checkout-form"
+import type { CountryData } from "@/lib/country-data"
 
 interface ContactInformationFormProps {
   form: UseFormReturn<CheckoutFormData>
+  countryData?: CountryData | null
 }
 
-export function ContactInformationForm({ form }: ContactInformationFormProps) {
+export function ContactInformationForm({ form, countryData }: ContactInformationFormProps) {
   return (
     <div className="space-y-4">
       <FormField
@@ -50,22 +52,29 @@ export function ContactInformationForm({ form }: ContactInformationFormProps) {
           <FormItem>
             <FormLabel>Phone Number</FormLabel>
             <FormControl>
-              <Input 
-                type="tel" 
-                {...field}
-                onKeyPress={(e) => {
-                  // Allow only numbers and +
-                  const allowedChars = /[0-9+]/
-                  if (!allowedChars.test(e.key)) {
-                    e.preventDefault()
-                  }
-                }}
-                onChange={(e) => {
-                  // Remove any non-allowed characters
-                  const value = e.target.value.replace(/[^0-9+]/g, '')
-                  field.onChange(value)
-                }}
-              />
+              <div className="flex">
+                <div className="flex items-center px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-700 rounded-l-md">
+                  {countryData?.phoneCode || '+1'}
+                </div>
+                <Input 
+                  type="tel" 
+                  {...field}
+                  className="rounded-l-none"
+                  placeholder="Enter phone number"
+                  onKeyPress={(e) => {
+                    // Allow only numbers, -, (, ), and space
+                    const allowedChars = /[0-9\-\(\)\s]/
+                    if (!allowedChars.test(e.key)) {
+                      e.preventDefault()
+                    }
+                  }}
+                  onChange={(e) => {
+                    // Remove any non-allowed characters
+                    const value = e.target.value.replace(/[^0-9\-\(\)\s]/g, '')
+                    field.onChange(value)
+                  }}
+                />
+              </div>
             </FormControl>
             <p className="text-sm text-silver-600">For courier SMS notifications</p>
             <FormMessage />

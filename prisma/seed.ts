@@ -32,27 +32,27 @@ async function main() {
   
   const products = [
     {
-      name: "Silver Ring 4",
-      slug: "silver-ring-4",
-      description: "925 Sterling Silver Ring 4",
+      name: "Silver Ring 5",
+      slug: "silver-ring-5",
+      description: "925 Sterling Silver Ring 5",
       priceCents: 4400,
       stockQuantity: 25,
       categoryId: category.id,
       featured: true
     },
     {
-      name: "Gold Ring 1",
-      slug: "gold-ring-1", 
-      description: "14K Gold Ring 1",
+      name: "Gold Ring 2",
+      slug: "gold-ring-2", 
+      description: "14K Gold Ring 2",
       priceCents: 8900,
       stockQuantity: 15,
       categoryId: category.id,
       featured: false
     },
     {
-      name: "Platinum Ring 2",
-      slug: "platinum-ring-2",
-      description: "Platinum Ring 2",
+      name: "Platinum Ring 3",
+      slug: "platinum-ring-3",
+      description: "Platinum Ring 3",
       priceCents: 12000,
       stockQuantity: 8,
       categoryId: category.id,
