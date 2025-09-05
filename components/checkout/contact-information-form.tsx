@@ -53,13 +53,13 @@ export function ContactInformationForm({ form, countryData }: ContactInformation
             <FormLabel>Phone Number</FormLabel>
             <FormControl>
               <div className="flex">
-                <div className="flex items-center px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-700 rounded-l-md">
+                <div className="flex items-center px-3 py-2 border border-r-0 border-gray-300 bg-gray-50 text-gray-700 rounded-l-md border-r-gray-300">
                   {countryData?.phoneCode || '+1'}
                 </div>
                 <Input 
                   type="tel" 
                   {...field}
-                  className="rounded-l-none"
+                  className="rounded-l-none border-l-0"
                   placeholder="Enter phone number"
                   onKeyPress={(e) => {
                     // Allow only numbers, -, (, ), and space
