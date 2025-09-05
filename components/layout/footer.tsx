@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContactModal } from "@/components/contact-modal"
+import { ShippingModal } from "@/components/shipping-modal"
 
 // Custom TikTok icon component
 function TikTokIcon({ className }: { className?: string }) {
@@ -22,6 +23,7 @@ function TikTokIcon({ className }: { className?: string }) {
 
 export function Footer() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const [isShippingModalOpen, setIsShippingModalOpen] = useState(false)
 
   return (
     <footer className="bg-silver-50 border-t border-silver-200">
@@ -75,9 +77,12 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
+                <button 
+                  onClick={() => setIsShippingModalOpen(true)}
+                  className="text-silver-600 hover:text-primary transition-colors text-sm text-left"
+                >
                   Shipping Info
-                </Link>
+                </button>
               </li>
               <li>
                 <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
@@ -130,6 +135,11 @@ export function Footer() {
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 
+      />
+      
+      <ShippingModal 
+        isOpen={isShippingModalOpen} 
+        onClose={() => setIsShippingModalOpen(false)} 
       />
     </footer>
   )
