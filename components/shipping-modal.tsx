@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Truck, Clock, AlertCircle } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface ShippingModalProps {
   isOpen: boolean
@@ -170,16 +171,32 @@ export function ShippingModal({ isOpen, onClose }: ShippingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold text-silver-900 flex items-center justify-center gap-2">
-            <Truck className="h-5 w-5" />
-            Shipping Information
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          {/* Region Selection */}
-          <div className="space-y-3">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl font-semibold text-silver-900 flex items-center justify-center gap-2">
+              <Truck className="h-5 w-5" />
+              Shipping Information
+            </DialogTitle>
+          </DialogHeader>
+          
+          <motion.div 
+            className="space-y-6 py-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
+            {/* Region Selection */}
+            <motion.div 
+              className="space-y-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
             <label htmlFor="region-select" className="block text-sm font-medium text-silver-700">
               Choose your region
             </label>
@@ -196,44 +213,63 @@ export function ShippingModal({ isOpen, onClose }: ShippingModalProps) {
                 ))}
               </SelectContent>
             </Select>
-          </div>
+            </motion.div>
 
-          {/* Delivery Estimate */}
-          {selectedRegionData && (
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2 text-silver-700">
-                <Clock className="h-5 w-5" />
-                <span className="font-medium">Estimated delivery:</span>
-              </div>
-              
-              <div className="p-4 bg-silver-50 rounded-lg border">
-                <p className="text-lg font-semibold text-silver-900">
-                  {selectedRegionData.minDays}–{selectedRegionData.maxDays} business days
-                </p>
-                
-                {selectedRegionData.hasCustoms && (
-                  <p className="text-sm text-silver-600 mt-1">
-                    Customs processing may extend delivery time
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
+            {/* Delivery Estimate */}
+            <AnimatePresence>
+              {selectedRegionData && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -20 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -20 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center space-x-2 text-silver-700">
+                    <Clock className="h-5 w-5" />
+                    <span className="font-medium">Estimated delivery:</span>
+                  </div>
+                  
+                  <div className="p-4 bg-silver-50 rounded-lg border">
+                    <p className="text-lg font-semibold text-silver-900">
+                      {selectedRegionData.minDays}–{selectedRegionData.maxDays} business days
+                    </p>
+                    
+                    {selectedRegionData.hasCustoms && (
+                      <p className="text-sm text-silver-600 mt-1">
+                        Customs processing may extend delivery time
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Important Note */}
-          <div className="flex items-start space-x-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-amber-800">
-              <strong>Note:</strong> Customs and peak seasons may add extra days, especially for jewelry.
-            </p>
-          </div>
+            {/* Important Note */}
+            <motion.div 
+              className="flex items-start space-x-2 p-3 bg-amber-50 border border-amber-200 rounded-lg"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+            >
+              <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-amber-800">
+                <strong>Note:</strong> Customs and peak seasons may add extra days, especially for jewelry.
+              </p>
+            </motion.div>
 
-          {/* Additional Info */}
-          <div className="text-center text-xs text-silver-500 pt-2">
-            <p>All shipping is via economy/postal service</p>
-            <p>Business days exclude weekends and holidays</p>
-          </div>
-        </div>
+            {/* Additional Info */}
+            <motion.div 
+              className="text-center text-xs text-silver-500 pt-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
+              <p>All shipping is via economy/postal service</p>
+              <p>Business days exclude weekends and holidays</p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   )

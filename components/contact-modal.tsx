@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Mail, Instagram, Copy, Check } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface ContactModalProps {
   isOpen: boolean
@@ -45,15 +46,31 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold text-silver-900">
-            Contact IOPAWN
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          {/* Email Section */}
-          <div className="space-y-3">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl font-semibold text-silver-900">
+              Contact IOPAWN
+            </DialogTitle>
+          </DialogHeader>
+          
+          <motion.div 
+            className="space-y-6 py-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+          >
+            {/* Email Section */}
+            <motion.div 
+              className="space-y-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
             <div className="flex items-center space-x-2 text-silver-700">
               <Mail className="h-5 w-5" />
               <span className="font-medium">Email us directly:</span>
@@ -83,20 +100,30 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
               <Mail className="h-4 w-4 mr-2" />
               Open Email Client
             </Button>
-          </div>
+            </motion.div>
 
-          {/* Divider */}
-          <div className="relative">
+            {/* Divider */}
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+            >
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-silver-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-white px-2 text-silver-500">or</span>
             </div>
-          </div>
+            </motion.div>
 
-          {/* Instagram Section */}
-          <div className="space-y-3">
+            {/* Instagram Section */}
+            <motion.div 
+              className="space-y-3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5, duration: 0.3 }}
+            >
             <div className="flex items-center space-x-2 text-silver-700">
               <Instagram className="h-5 w-5" />
               <span className="font-medium">Message us on Instagram:</span>
@@ -116,13 +143,19 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 Open Instagram
               </Button>
             </div>
-          </div>
+            </motion.div>
 
-          {/* Additional Info */}
-          <div className="text-center text-xs text-silver-500 pt-2">
-            <p>We typically respond within 24 hours</p>
-          </div>
-        </div>
+            {/* Additional Info */}
+            <motion.div 
+              className="text-center text-xs text-silver-500 pt-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.3 }}
+            >
+              <p>We typically respond within 24 hours</p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   )

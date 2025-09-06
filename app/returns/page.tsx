@@ -1,19 +1,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { motion } from "framer-motion"
 
 export default function ReturnsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-8">
-        <div className="text-center">
+      <motion.div 
+        className="space-y-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+        >
           <h1 className="text-3xl font-light text-silver-900 mb-4">Returns & Refunds</h1>
           <p className="text-silver-600 text-lg">
             We want you to love your IOPAWN jewelry. If you're not completely satisfied, 
             you have 14 days from delivery to return your purchase for a full refund.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid gap-6">
-          <Card>
+        <motion.div 
+          className="grid gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">How to Return</CardTitle>
             </CardHeader>
@@ -27,8 +48,14 @@ export default function ReturnsPage() {
               </ol>
             </CardContent>
           </Card>
+          </motion.div>
 
-          <Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">What's Not Returnable</CardTitle>
             </CardHeader>
@@ -41,9 +68,15 @@ export default function ReturnsPage() {
                 <li>Items showing signs of wear or damage not present at delivery</li>
               </ul>
             </CardContent>
-          </Card>
+            </Card>
+          </motion.div>
 
-          <Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">Refunds & Processing</CardTitle>
             </CardHeader>
@@ -63,9 +96,15 @@ export default function ReturnsPage() {
                 </p>
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </motion.div>
 
-          <Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">Legal Warranty</CardTitle>
             </CardHeader>
@@ -76,9 +115,15 @@ export default function ReturnsPage() {
                 This warranty covers manufacturing defects and does not include normal wear and tear.
               </p>
             </CardContent>
-          </Card>
+            </Card>
+          </motion.div>
 
-          <Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">Frequently Asked Questions</CardTitle>
             </CardHeader>
@@ -122,9 +167,15 @@ export default function ReturnsPage() {
                 </p>
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </motion.div>
 
-          <Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="text-xl">Need Help?</CardTitle>
             </CardHeader>
@@ -141,9 +192,10 @@ export default function ReturnsPage() {
                 </p>
               </div>
             </CardContent>
-          </Card>
-        </div>
-      </div>
+            </Card>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
