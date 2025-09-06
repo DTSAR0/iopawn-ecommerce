@@ -54,11 +54,6 @@ export function Footer() {
               </li>
               <li>
                 <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
-                  Care Guide
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
                   Size Guide
                 </Link>
               </li>
@@ -85,13 +80,8 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
+                <Link href="/returns" className="text-silver-600 hover:text-primary transition-colors text-sm">
                   Returns
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-silver-600 hover:text-primary transition-colors text-sm">
-                  FAQ
                 </Link>
               </li>
             </ul>
