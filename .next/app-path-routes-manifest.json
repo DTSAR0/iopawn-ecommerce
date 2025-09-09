@@ -1,0 +1,15 @@
+{
+  "/api/cart/validate/route": "/api/cart/validate",
+  "/_not-found/page": "/_not-found",
+  "/api/orders/confirm/route": "/api/orders/confirm",
+  "/api/orders/create/route": "/api/orders/create",
+  "/api/products/route": "/api/products",
+  "/api/payments/create-session/route": "/api/payments/create-session",
+  "/about/page": "/about",
+  "/checkout/page": "/checkout",
+  "/returns/page": "/returns",
+  "/order-confirmation/[orderId]/page": "/order-confirmation/[orderId]",
+  "/page": "/",
+  "/product/[id]/page": "/product/[id]",
+  "/catalogue/page": "/catalogue"
+}

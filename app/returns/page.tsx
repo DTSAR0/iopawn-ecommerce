@@ -185,11 +185,18 @@ export default function ReturnsPage() {
               <p className="text-silver-700 mb-4">
                 If you have any questions about returns or need assistance, please don't hesitate to contact us.
               </p>
-              <div className="space-y-2">
-                <p className="text-silver-700">
-                  <strong>Email:</strong> <a href="mailto:info@iopawn.com" className="text-primary hover:underline">info@iopawn.com</a>
-                </p>
-                <p className="text-silver-700">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-silver-700 font-medium">Email:</span>
+                  <a href="mailto:iopawnshop@gmail.com" className="text-primary hover:underline">iopawnshop@gmail.com</a>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-silver-700 font-medium">Instagram:</span>
+                  <a href="https://www.instagram.com/iopawn/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    @iopawn
+                  </a>
+                </div>
+                <p className="text-silver-700 text-sm">
                   <strong>Response time:</strong> We typically respond within 24 hours
                 </p>
               </div>
